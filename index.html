@@ -121,10 +121,10 @@
         .btn:hover { background: #b18a24; transform: translateY(-2px); box-shadow: 0 6px 0px #725611; }
         .btn:active { transform: translateY(2px); box-shadow: 0 0px 0px #725611; }
 
-        input, select {
+        input, select, textarea {
             transition: 0.3s; outline: none; border: 1px solid #eee !important;
         }
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: var(--soft-pink) !important;
             box-shadow: 0 0 0 3px rgba(244, 218, 218, 0.4);
         }
@@ -234,6 +234,7 @@
 
                     <div class="card-small">
                         <b style="color: var(--deep-gold); font-size: 1rem; display: block; margin-bottom: 15px;">RSVP ลงทะเบียน</b>
+                        
                         <input type="text" id="guest_name" placeholder="ชื่อ-นามสกุลแขก" style="width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: 'Sarabun'; box-sizing: border-box; font-size: 16px;">
                         
                         <input type="tel" id="guest_phone" placeholder="เบอร์โทรศัพท์ติดต่อ" oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" style="width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: 'Sarabun'; box-sizing: border-box; font-size: 16px;">
@@ -244,13 +245,22 @@
                             <option value="เจ้าบ่าว (Paohue)">แขกฝ่ายเจ้าบ่าว (Paohue)</option>
                             <option value="ทั้งคู่">รู้จักทั้งคู่</option>
                         </select>
+
+                        <select id="attendance" onchange="toggleMessageBox()" style="width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: 'Sarabun'; background: white; font-size: 14px;">
+                            <option value="" disabled selected>สะดวกเข้าร่วมงานหรือไม่?</option>
+                            <option value="เข้าร่วมได้">สามารถเข้าร่วมได้</option>
+                            <option value="ไม่สามารถเข้าร่วมได้">ไม่สามารถเข้าร่วมได้ (ส่งซอง/อวยพร)</option>
+                        </select>
+
+                        <textarea id="guest_message" placeholder="ข้อความอวยพร หรือฝากบอกบ่าวสาว 🤍" style="display: none; width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: 'Sarabun'; box-sizing: border-box; font-size: 14px; min-height: 80px; resize: vertical;"></textarea>
+
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                             <span style="font-size: 0.85rem; color: #666;">ผู้ติดตาม:</span>
                             <input type="number" id="guest_count" min="0" value="0" style="width: 60px; padding: 10px; border-radius: 10px; text-align: center;">
                             <span style="font-size: 0.85rem; color: #666;">ท่าน</span>
                         </div>
                         
-                        <button id="submit-btn" class="btn" onclick="submitRSVP()" style="margin-bottom: 10px;">ยืนยันร่วมงาน</button>
+                        <button id="submit-btn" class="btn" onclick="submitRSVP()" style="margin-bottom: 10px;">ยืนยันการลงทะเบียน</button>
                         
                         <div id="stats" style="font-size: 0.8rem; color:#888; margin-top:10px;">กำลังโหลดข้อมูล...</div>
                     </div>
@@ -292,7 +302,18 @@
             if (a.paused) { a.play(); b.innerText = '🎵'; } else { a.pause(); b.innerText = '🔇'; }
         }
 
-        // Countdown Timer
+        // ฟังก์ชันสำหรับเปิด/ปิดกล่องพิมพ์ข้อความ
+        function toggleMessageBox() {
+            const attendance = document.getElementById('attendance').value;
+            const messageBox = document.getElementById('guest_message');
+            if (attendance === 'ไม่สามารถเข้าร่วมได้') {
+                messageBox.style.display = 'block';
+            } else {
+                messageBox.style.display = 'none';
+                messageBox.value = ''; // ล้างข้อความทิ้งถ้าเปลี่ยนใจมาร่วมงาน
+            }
+        }
+
         const targetDate = new Date("Nov 28, 2026 08:00:00").getTime();
         setInterval(() => {
             const now = new Date().getTime();
@@ -305,23 +326,25 @@
         }, 1000);
 
         // --- ส่วนเชื่อมต่อ Google Sheets API ---
-        
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyimMq9hs7-1ai7VGKTmuHBG52wg-KU3T32pP7DADl0f9RJ1A6OA-8h2ESwhqVc-PW-/exec"
+        
         async function submitRSVP() {
-            const btn = document.getElementById('submit-btn'); // ดึงปุ่มมาใช้งาน
+            const btn = document.getElementById('submit-btn'); 
             const name = document.getElementById('guest_name').value;
-            const phone = document.getElementById('guest_phone').value; // ดึงข้อมูลเบอร์โทร
+            const phone = document.getElementById('guest_phone').value; 
             const relation = document.getElementById('relationship').value;
+            const attendance = document.getElementById('attendance').value; 
             const count = document.getElementById('guest_count').value;
+            const message = document.getElementById('guest_message').value; // ดึงข้อความอวยพร
 
             if (!name) return alert('กรุณาระบุชื่อแขกด้วยนะครับ');
             if (!phone) return alert('กรุณาระบุเบอร์โทรศัพท์ด้วยนะครับ');
             
-            // เช็คซ้ำว่ามีเฉพาะตัวเลขและ - หรือไม่
             const phoneRegex = /^[0-9\-]+$/;
             if (!phoneRegex.test(phone)) return alert('เบอร์โทรศัพท์ระบุได้เฉพาะตัวเลขและเครื่องหมาย - เท่านั้นครับ'); 
 
             if (!relation) return alert('กรุณาเลือกฝ่ายด้วยนะครับ');
+            if (!attendance) return alert('กรุณาระบุความสะดวกในการเข้าร่วมงานด้วยนะครับ'); 
 
             btn.innerText = "กำลังบันทึก...";
             btn.disabled = true;
@@ -330,35 +353,39 @@
                 name: name,
                 phone: phone, 
                 relation: relation,
-                count: parseInt(count) + 1
+                attendance: attendance, 
+                count: parseInt(count) + 1,
+                message: message // แนบข้อความอวยพรไปกับ data
             };
 
             try {
                 await fetch(SCRIPT_URL, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "text/plain;charset=utf-8" // สำคัญ! ป้องกัน CORS error
+                        "Content-Type": "text/plain;charset=utf-8"
                     },
                     body: JSON.stringify(data)
                 });
 
                 showToast("ลงทะเบียนสำเร็จ 🎉");
 
-                // รีเซ็ตฟอร์มหลังจากส่งเสร็จ
+                // รีเซ็ตฟอร์ม
                 document.getElementById('guest_name').value = "";
-                document.getElementById('guest_phone').value = ""; // ล้างช่องเบอร์โทร
+                document.getElementById('guest_phone').value = "";
                 document.getElementById('guest_count').value = 0;
                 document.getElementById('relationship').selectedIndex = 0;
+                document.getElementById('attendance').selectedIndex = 0;
+                document.getElementById('guest_message').value = "";
+                document.getElementById('guest_message').style.display = "none"; // ซ่อนกล่องข้อความกลับไป
 
-                loadStats(); // อัปเดตยอดคนเรียลไทม์
+                loadStats(); 
 
             } catch (err) {
                 showToast("เกิดข้อผิดพลาดในการบันทึก ❌");
                 console.error(err);
             }
 
-            // คืนค่าปุ่มกลับมาเหมือนเดิม
-            btn.innerText = "ยืนยันร่วมงาน";
+            btn.innerText = "ยืนยันการลงทะเบียน";
             btn.disabled = false;
         }
 
@@ -366,13 +393,12 @@
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
-                document.getElementById("stats").innerText = `มีผู้ลงทะเบียนแล้ว ${data.total} คน`;
+                document.getElementById("stats").innerText = `มีผู้ลงทะเบียนเข้าร่วมงานแล้ว ${data.total} คน`;
             } catch {
                 document.getElementById("stats").innerText = "ไม่สามารถโหลดข้อมูลผู้ร่วมงานได้";
             }
         }
 
-        // โหลดข้อมูลคนมาร่วมงานตั้งแต่เปิดหน้าเว็บ
         loadStats();
 
         function showToast(msg) {
