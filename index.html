@@ -10,8 +10,10 @@
             --warm-bg: #fdf8f2;
             --soft-pink: #f4dada;
             --deep-gold: #967117;
+            --gold-light: #d4af37;
             --text-dark: #3d342d;
             --glass-white: rgba(255, 255, 255, 0.96);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         body, html {
@@ -33,16 +35,22 @@
         .container {
             width: 100%; max-width: 950px; min-height: 92vh; 
             background: var(--glass-white); border-radius: 40px;
-            box-shadow: 0 30px 70px rgba(150, 113, 23, 0.12);
+            box-shadow: 0 20px 50px rgba(150, 113, 23, 0.1);
             display: flex; flex-direction: column; padding: 30px;
             box-sizing: border-box; position: relative;
             transform-style: preserve-3d;
             border: 1px solid var(--soft-pink);
             margin: 20px 0;
+            transition: var(--transition);
         }
 
-        /* Header */
-        .header { text-align: center; margin-bottom: 20px; }
+        .container:hover {
+            box-shadow: 0 40px 80px rgba(150, 113, 23, 0.18);
+        }
+
+        .header { text-align: center; margin-bottom: 20px; transition: transform 0.5s ease; }
+        .container:hover .header { transform: translateY(-5px); }
+        
         .couple-names {
             font-family: 'Playfair Display', serif; 
             font-size: clamp(1.8rem, 8vw, 3.5rem);
@@ -50,7 +58,6 @@
         }
         .and-symbol { font-family: 'Dancing Script', cursive; font-size: clamp(1.5rem, 5vw, 2.5rem); color: var(--soft-pink); margin: 0 8px; }
 
-        /* Countdown */
         .countdown-container { 
             display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; 
             flex-wrap: wrap;
@@ -59,11 +66,12 @@
             background: #fff; padding: 10px; border-radius: 12px; min-width: 60px;
             border-bottom: 2px solid var(--soft-pink); box-shadow: 0 4px 8px rgba(0,0,0,0.02);
             text-align: center; flex: 1; max-width: 80px;
+            transition: var(--transition);
         }
+        .count-item:hover { transform: translateY(-5px); border-bottom-color: var(--deep-gold); }
         .count-number { display: block; font-size: 1.4rem; font-weight: 700; color: var(--deep-gold); }
         .count-label { font-size: 0.6rem; color: #888; font-weight: 700; }
 
-        /* Layout */
         .content-layout {
             display: grid; 
             grid-template-columns: 1.2fr 0.8fr; 
@@ -73,38 +81,74 @@
 
         .left-column { display: flex; flex-direction: column; gap: 20px; }
 
-        /* Timeline & Cards */
         .timeline-side {
             background: #fff; border-radius: 30px; padding: 25px;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.01);
             text-align: left; border: 1px solid #fdf8f2;
         }
         .timeline-title { color: var(--deep-gold); font-weight: 800; border-left: 4px solid var(--soft-pink); padding-left: 12px; margin-bottom: 20px; font-size: 1.1rem; }
-        .timeline-item { margin-bottom: 22px; position: relative; padding-left: 15px; border-left: 1px solid var(--soft-pink); }
+        .timeline-item { 
+            margin-bottom: 22px; position: relative; padding-left: 20px; 
+            border-left: 1px solid var(--soft-pink);
+            transition: 0.3s;
+        }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -5px; top: 5px;
+            width: 9px; height: 9px; background: var(--soft-pink);
+            border-radius: 50%; transition: 0.3s;
+        }
+        .timeline-item:hover { border-left-color: var(--deep-gold); }
+        .timeline-item:hover::before { background: var(--deep-gold); transform: scale(1.3); }
+
         .time-header { font-weight: 700; color: var(--deep-gold); font-size: 0.9rem; display: block; margin-bottom: 2px; }
         .event-title { font-weight: 700; font-size: 1rem; color: var(--text-dark); display: block; }
         .event-detail { font-size: 0.85rem; color: #666; line-height: 1.4; display: block; margin-top: 2px; }
 
         .action-side { display: flex; flex-direction: column; gap: 20px; }
-        .card-small { background: #fff; padding: 20px; border-radius: 25px; border: 1px solid var(--soft-pink); text-align: center; }
+        .card-small { 
+            background: #fff; padding: 20px; border-radius: 25px; 
+            border: 1px solid var(--soft-pink); text-align: center;
+            transition: var(--transition);
+        }
+        .card-small:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         
         .btn { 
             background: var(--deep-gold); color: white; padding: 14px; border: none; 
             border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; 
             transition: 0.3s; font-size: 0.95rem; -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 4px 0px #725611;
         }
-        .btn:active { transform: scale(0.98); }
+        .btn:hover { background: #b18a24; transform: translateY(-2px); box-shadow: 0 6px 0px #725611; }
+        .btn:active { transform: translateY(2px); box-shadow: 0 0px 0px #725611; }
 
-        /* QR & Theme Styles */
-        .qr-img { width: 120px; height: 120px; border-radius: 12px; border: 2px solid var(--soft-pink); margin-bottom: 10px; object-fit: cover; }
-        .theme-dot { width: 35px; height: 35px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        input, select {
+            transition: 0.3s; outline: none; border: 1px solid #eee !important;
+        }
+        input:focus, select:focus {
+            border-color: var(--soft-pink) !important;
+            box-shadow: 0 0 0 3px rgba(244, 218, 218, 0.4);
+        }
+
+        .qr-img { 
+            width: 120px; height: 120px; border-radius: 12px; 
+            border: 2px solid var(--soft-pink); margin-bottom: 10px; 
+            object-fit: cover; transition: 0.3s;
+        }
+        .qr-img:hover { transform: scale(1.05); border-color: var(--deep-gold); }
+
+        .theme-dot { 
+            width: 35px; height: 35px; border-radius: 50%; border: 3px solid #fff; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .theme-dot:hover { transform: scale(1.2) rotate(15deg); }
 
         #music-btn { 
             position: fixed; bottom: 20px; right: 20px; z-index: 100; 
             background: #fff; border: 1px solid var(--deep-gold); border-radius: 50%; 
             width: 50px; height: 50px; cursor: pointer; font-size: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s;
         }
+        #music-btn:hover { transform: scale(1.1) rotate(-10deg); }
 
         .magic-flower { position: absolute; pointer-events: none; animation: floatUp 1.2s forwards ease-out; z-index: 1000; }
         @keyframes floatUp { 0% { opacity:1; transform:translateY(0) scale(1); } 100% { opacity:0; transform:translateY(-80px) scale(1.8) rotate(45deg); } }
@@ -113,7 +157,8 @@
             .content-layout { grid-template-columns: 1fr; }
             .container { height: auto; padding: 20px 15px; border-radius: 30px; transform: none !important; }
             .main-wrapper { padding: 10px; align-items: flex-start; }
-            .theme-section { flex-direction: row; } /* ยังคงเรียงแนวนอนคู่กันในมือถือ */
+            .theme-section { flex-direction: row; }
+            .container:hover { transform: none; }
         }
     </style>
 </head>
@@ -173,8 +218,8 @@
                             </div>
                             <span style="font-size: 0.75rem; color: #888; margin-top: 8px; font-weight: 600;">Gold | Pink | Teal</span>
                         </div>
-                        <div class="card-small" style="flex: 1; padding: 0; overflow: hidden; border: none;">
-                            <img src="pa.jpg" style="width: 100%; height: 100%; object-fit: cover;" alt="Annie & Pao">
+                        <div class="card-small" style="flex: 1; padding: 0; overflow: hidden; border: none; position: relative;">
+                            <img src="pa.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: 0.5s;" alt="Annie & Pao" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                         </div>
                     </div>
                 </div>
@@ -182,15 +227,18 @@
                 <div class="action-side">
                     <div class="card-small">
                         <b style="color: var(--deep-gold); font-size: 0.9rem; display: block; margin-bottom: 10px;">สถานที่จัดงาน</b>
-                        <img src="map.png" alt="Scan Map" class="qr-img" onerror="this.src='https://via.placeholder.com/120?text=Scan+Map'">
+                        <img src="map.png" alt="Scan Map" class="qr-img" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.google.com'">
                         <span style="font-size: 0.8rem; display: block; margin-bottom: 12px;">วิทยาลัยการอาชีพขอนแก่น (อ.ชนบท)</span>
-                        <button class="btn" style="background: #fdf8f2; color: #3d342d; font-size: 0.85rem; border: 1px solid var(--soft-pink);" onclick="window.open('https://maps.app.goo.gl/Q7w9SVi7UAHgFfAm7')">เปิด Google Maps</button>
+                        <button class="btn" style="background: #fdf8f2; color: #3d342d; font-size: 0.85rem; border: 1px solid var(--soft-pink); box-shadow: none;" onclick="window.open('https://maps.google.com')">เปิด Google Maps</button>
                     </div>
 
                     <div class="card-small">
                         <b style="color: var(--deep-gold); font-size: 1rem; display: block; margin-bottom: 15px;">RSVP ลงทะเบียน</b>
-                        <input type="text" id="guest_name" placeholder="ชื่อ-นามสกุลแขก" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px; font-family: 'Sarabun'; box-sizing: border-box; font-size: 16px;">
-                        <select id="relationship" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px; font-family: 'Sarabun'; background: white; font-size: 14px;">
+                        <input type="text" id="guest_name" placeholder="ชื่อ-นามสกุลแขก" style="width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: 'Sarabun'; box-sizing: border-box; font-size: 16px;">
+                        
+                        <input type="tel" id="guest_phone" placeholder="เบอร์โทรศัพท์ติดต่อ" oninput="this.value = this.value.replace(/[^0-9\-]/g, '');" style="width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: 'Sarabun'; box-sizing: border-box; font-size: 16px;">
+
+                        <select id="relationship" style="width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: 'Sarabun'; background: white; font-size: 14px;">
                             <option value="" disabled selected>ท่านเป็นแขกของฝ่ายใด?</option>
                             <option value="เจ้าสาว (Annie)">แขกฝ่ายเจ้าสาว (Annie)</option>
                             <option value="เจ้าบ่าว (Paohue)">แขกฝ่ายเจ้าบ่าว (Paohue)</option>
@@ -198,37 +246,30 @@
                         </select>
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                             <span style="font-size: 0.85rem; color: #666;">ผู้ติดตาม:</span>
-                            <input type="number" id="guest_count" min="0" value="0" style="width: 60px; padding: 10px; border-radius: 10px; border: 1px solid #eee; text-align: center;">
+                            <input type="number" id="guest_count" min="0" value="0" style="width: 60px; padding: 10px; border-radius: 10px; text-align: center;">
                             <span style="font-size: 0.85rem; color: #666;">ท่าน</span>
                         </div>
-                        <button class="btn" onclick="submitRSVP()">ยืนยันร่วมงาน</button>
+                        
+                        <button id="submit-btn" class="btn" onclick="submitRSVP()" style="margin-bottom: 10px;">ยืนยันร่วมงาน</button>
+                        
+                        <div id="stats" style="font-size: 0.8rem; color:#888; margin-top:10px;">กำลังโหลดข้อมูล...</div>
                     </div>
 
                     <div class="card-small" style="border-color: var(--deep-gold); border-bottom-width: 3px;">
                         <b style="color: var(--deep-gold); font-size: 0.9rem; display: block; margin-bottom: 10px;">Gift for Groom</b>
-                        <img src="money.png" alt="Scan to Gift" class="qr-img" style="border-color: var(--deep-gold);" onerror="this.src='https://via.placeholder.com/120?text=Scan+to+Gift'">
+                        <img src="money.png" alt="Scan to Gift" class="qr-img" style="border-color: var(--deep-gold);" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Gift'">
                         <span style="font-size: 0.8rem; font-weight: 700; color: var(--deep-gold); display: block;">สแกนเพื่อร่วมอวยพรเจ้าบ่าว</span>
                     </div>
                 </div>
             </div>
         </div>
+        <div id="toast" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #3d342d; color: white; padding: 12px 20px; border-radius: 12px; opacity: 0; transition: 0.4s; z-index: 9999; font-size: 14px;"></div>
     </div>
 
     <script>
         const card = document.getElementById('invite-card');
         const flowerContainer = document.getElementById('flower-container');
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-        // 3D Tilt effect
-        if (!isMobile) {
-            document.addEventListener('mousemove', (e) => {
-                const xAxis = (window.innerWidth / 2 - e.pageX) / 70;
-                const yAxis = (window.innerHeight / 2 - e.pageY) / 70;
-                card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-            });
-        }
-
-        // Flower Effect
         const spawnFlower = (x, y) => {
             if (Math.random() > 0.85) {
                 const f = document.createElement('div');
@@ -263,14 +304,84 @@
             document.getElementById('secs').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }, 1000);
 
-        function submitRSVP() {
+        // --- ส่วนเชื่อมต่อ Google Sheets API ---
+        
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyimMq9hs7-1ai7VGKTmuHBG52wg-KU3T32pP7DADl0f9RJ1A6OA-8h2ESwhqVc-PW-/exec"
+        async function submitRSVP() {
+            const btn = document.getElementById('submit-btn'); // ดึงปุ่มมาใช้งาน
             const name = document.getElementById('guest_name').value;
+            const phone = document.getElementById('guest_phone').value; // ดึงข้อมูลเบอร์โทร
             const relation = document.getElementById('relationship').value;
             const count = document.getElementById('guest_count').value;
-            if (!name) return alert('กรุณาระบุชื่อด้วยนะคะ ✨');
-            if (!relation) return alert('กรุณาเลือกฝ่ายด้วยนะคะ 🌸');
-            const total = parseInt(count) + 1;
-            alert(`ขอบคุณคุณ ${name} มากค่ะ!\nทางเราได้รับข้อมูลแขกจำนวน ${total} ท่านเรียบร้อยแล้ว\nแล้วพบกันในงานนะคะ 🌸`);
+
+            if (!name) return alert('กรุณาระบุชื่อแขกด้วยนะครับ');
+            if (!phone) return alert('กรุณาระบุเบอร์โทรศัพท์ด้วยนะครับ');
+            
+            // เช็คซ้ำว่ามีเฉพาะตัวเลขและ - หรือไม่
+            const phoneRegex = /^[0-9\-]+$/;
+            if (!phoneRegex.test(phone)) return alert('เบอร์โทรศัพท์ระบุได้เฉพาะตัวเลขและเครื่องหมาย - เท่านั้นครับ'); 
+
+            if (!relation) return alert('กรุณาเลือกฝ่ายด้วยนะครับ');
+
+            btn.innerText = "กำลังบันทึก...";
+            btn.disabled = true;
+
+            const data = {
+                name: name,
+                phone: phone, 
+                relation: relation,
+                count: parseInt(count) + 1
+            };
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8" // สำคัญ! ป้องกัน CORS error
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                showToast("ลงทะเบียนสำเร็จ 🎉");
+
+                // รีเซ็ตฟอร์มหลังจากส่งเสร็จ
+                document.getElementById('guest_name').value = "";
+                document.getElementById('guest_phone').value = ""; // ล้างช่องเบอร์โทร
+                document.getElementById('guest_count').value = 0;
+                document.getElementById('relationship').selectedIndex = 0;
+
+                loadStats(); // อัปเดตยอดคนเรียลไทม์
+
+            } catch (err) {
+                showToast("เกิดข้อผิดพลาดในการบันทึก ❌");
+                console.error(err);
+            }
+
+            // คืนค่าปุ่มกลับมาเหมือนเดิม
+            btn.innerText = "ยืนยันร่วมงาน";
+            btn.disabled = false;
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const data = await res.json();
+                document.getElementById("stats").innerText = `มีผู้ลงทะเบียนแล้ว ${data.total} คน`;
+            } catch {
+                document.getElementById("stats").innerText = "ไม่สามารถโหลดข้อมูลผู้ร่วมงานได้";
+            }
+        }
+
+        // โหลดข้อมูลคนมาร่วมงานตั้งแต่เปิดหน้าเว็บ
+        loadStats();
+
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            t.innerText = msg;
+            t.style.opacity = 1;
+            setTimeout(() => {
+                t.style.opacity = 0;
+            }, 2500);
         }
     </script>
 </body>
