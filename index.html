@@ -209,7 +209,13 @@
                     </div>
 
                     <div class="theme-section" style="display: flex; gap: 15px;">
-                        <div class="card-small" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
+                        
+                        <div class="card-small" style="flex: 1; padding: 0; overflow: hidden; border: none; position: relative;">
+                            <img src="Gemini01.png" style="width: 100%; height: 100%; object-fit: cover; transition: 0.5s;" alt="Annie & Pao" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        
+                    </div>
+                    <div class="card-small" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
                             <b style="color: var(--deep-gold); font-size: 1.1rem; margin-bottom: 10px;">ธีมงาน</b>
                             <div style="display: flex; gap: 10px;">
                                 <div class="theme-dot" style="background: #d4af37;" title="Gold"></div>
@@ -218,11 +224,10 @@
                             </div>
                             <span style="font-size: 0.75rem; color: #888; margin-top: 8px; font-weight: 600;">Gold | Pink | Teal</span>
                         </div>
-                        <div class="card-small" style="flex: 1; padding: 0; overflow: hidden; border: none; position: relative;">
-                            <img src="pa.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: 0.5s;" alt="Annie & Pao" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                        </div>
-                    </div>
+                    
+                    
                 </div>
+                
 
                 <div class="action-side">
                     <div class="card-small">
@@ -326,7 +331,7 @@
         }, 1000);
 
         // --- ส่วนเชื่อมต่อ Google Sheets API ---
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyimMq9hs7-1ai7VGKTmuHBG52wg-KU3T32pP7DADl0f9RJ1A6OA-8h2ESwhqVc-PW-/exec"
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9eX66vbPDIKgxCSPr9xH6-mit-Rs6-0x5MMrgr7q-l92EWYib1oS39yYepOC1fdjZ/exec"
         
         async function submitRSVP() {
             const btn = document.getElementById('submit-btn'); 
